@@ -1,0 +1,30 @@
+twice(x, y) {
+	if(1) {
+		x=1;
+	} else {
+		if(0) {
+			output x;
+			input 3;
+		} else {
+			while(0) {
+				x=21;
+				x=2;
+			}
+		}
+	}
+	if(1) {
+		x=1;
+	} else {
+		if(0) {
+			output x;
+			input 3;
+		} else {
+			while(0) {
+				x=21;
+				x=2;
+			}
+		}
+	}
+	return 2;
+}
+
