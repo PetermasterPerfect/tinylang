@@ -1,11 +1,41 @@
 from tinyVisitor import *
 from tinyParser import tinyParser
+from random import randint
 import pdb
 
 
+class DotGraphElement:
+    def __init__(self, name, label, sub_chain=[]):
+        self.name = name
+        self.id = f'{name}_{randint(1, 1000000)}'
+        self.label = label
+        if type(sub_chain) is not list:
+            self.sub_chain = [sub_chain]
+        else:
+            self.sub_chain = sub_chain
+
+    
+    def print_dot(self):
+        #print('sub_chain:', self.sub_chain)
+        if self.sub_chain:
+            for i in self.sub_chain:
+                print(f'{self.id} -> {i}')
+        if self.label in ['then', 'else']:
+            print(f'{self.id} [label="{self.label}" style=filled, fillcolor="blue:green", gradientangle=270]')
+        else:
+            print(f'{self.id} [label="{self.label}"]')
+
+
 class ProgramAstNode:
-    def __init__(self):
-        self.functions = []
+    def __init__(self, fs):
+        self.functions = fs
+
+
+    def draw_graph(self):
+        print('digraph ast {')
+        for f in self.functions:
+            f.draw_graph()
+        print('}')
 
 
 class FunAstNode():
@@ -17,15 +47,43 @@ class FunAstNode():
         self.ret = r
 
 
+    def draw_graph(self):
+        sub_stms = [x.draw_graph() for x in self.stms]
+        label = [x.label for x in sub_stms]
+        sub_chain = [x.id for x in sub_stms]
+
+        sub_ret = self.ret.draw_graph()
+        return_node = DotGraphElement('ret', f'return {sub_ret.label}', sub_ret.id)
+
+        header_label = f'{self.name}({", ".join(self.args)})\\n'
+        header_label += f'var {", ".join(self.vars)}'
+        header_node = DotGraphElement('fun_header', header_label, [return_node.id]+sub_chain)
+        header_node.print_dot()
+        return_node.print_dot()
+        
+
 class AssignAstNode():
     def __init__(self, n, v):
         self.name = n
         self.value = v
 
+    def draw_graph(self):
+        sub = self.value.draw_graph()
+        dot = DotGraphElement('assignment', f'{self.name}={sub.label}', sub.id)
+        dot.print_dot()
+        return dot
+
 
 class OutputAstNode():
     def __init__(self, e):
         self.exp = e
+
+    
+    def draw_graph(self):
+        exp = self.exp.draw_graph()
+        dot = DotGraphElement('output', f'output {exp.label}', exp.id)
+        dot.print_dot()
+        return dot
 
 
 class IfAstNode():
@@ -34,12 +92,34 @@ class IfAstNode():
         self.then = t
         self.els = e
 
+    def draw_graph(self):
+        cond_node = self.cond.draw_graph()
+        then_nodes = [x.draw_graph() for x in self.then]
+        then_sub_chain = [x.id for x in then_nodes]
+        else_nodes = [x.draw_graph() for x in self.els]
+        else_sub_chain = [x.id for x in else_nodes]
+        else_node = DotGraphElement('else', 'else', else_sub_chain)
+        then_node = DotGraphElement('then', 'then', then_sub_chain)
+        if_node = DotGraphElement('if', f'if {cond_node.label}', [cond_node.id, then_node.id, else_node.id])
+        if_node.print_dot()
+        then_node.print_dot()
+        else_node.print_dot()
+        return if_node
+        
 
 class WhileAstNode():
     def __init__(self, c, b):
         self.cond = c
         self.body = b
 
+    def draw_graph(self):
+        cond_node = self.cond.draw_graph()
+        body_nodes = [x.draw_graph() for x in self.body]
+        sub_chain = [x.id for x in body_nodes]
+        loop_node = DotGraphElement('loop', f'while {cond_node.label}', [cond_node.id]+sub_chain)
+        loop_node.print_dot()
+        return loop_node
+        
 
 class ExpAstNode():
     def __init__(self, s, o=None):
@@ -47,14 +127,35 @@ class ExpAstNode():
         self.op = o
 
 
+    def draw_graph(self):
+        sub_exp = [x.draw_graph() for x in self.sub_exps]
+        label = self.op.join([x.label for x in sub_exp]) if self.op else sub_exp[0].label
+        sub_chain = [x.id for x in sub_exp]
+        dot = DotGraphElement('exp', label, sub_chain)
+        dot.print_dot()
+        return dot
+        
+ 
 class NumAstNode():
     def __init__(self, v):
         self.value = v
+        
+
+    def draw_graph(self):
+        dot = DotGraphElement('num',str(self.value))
+        dot.print_dot()
+        return dot
 
 
 class IdAstNode():
     def __init__(self, n):
         self.name = n
+
+
+    def draw_graph(self):
+        dot = DotGraphElement('id', self.name)
+        dot.print_dot()
+        return dot
 
 
 class FunCallAstNode():
@@ -63,8 +164,22 @@ class FunCallAstNode():
         self.params = p
 
 
+    def draw_graph(self):
+        sub_exp = [x.draw_graph() for x in self.params]
+        label = ', '.join([x.label for x in sub_exp])
+        sub_chain = [x.id for x in sub_exp]
+        dot = DotGraphElement('fun', f'{name}({label})', sub_chain)
+        dot.print_dot()
+        return dot
+
+
 class InputAstNode():
-    pass
+    
+    def draw_graph(self):
+        dot = DotGraphElement('input', f'input')
+        dot.print_dot()
+        return dot
+
 
 def token_to_operator(ctx):
     if ctx.ADD():
@@ -85,21 +200,19 @@ class TinyAstBuilder(tinyVisitor):
 
 
     def visitProgram(self, ctx:tinyParser.ProgramContext):
-        buf = [self.visit(x) for x in ctx.children]
-        for i in buf:
-            print(i)
-        return buf
+        funs = [self.visit(x) for x in ctx.children]
+        return ProgramAstNode(funs)
     
 
     def visitFun_head(self, ctx:tinyParser.Fun_headContext):
         name = ctx.ID().getText()
-        args = [x.getText() for x in ctx.id_list().ID()] if ctx.id_list() else None
+        args = [x.getText() for x in ctx.id_list().ID()] if ctx.id_list() else []
         return name, args
 
 
     def visitFun(self, ctx:tinyParser.FunContext):
         name, args = self.visit(ctx.fun_head())
-        var = [x.getText for x in ctx.id_list().ID()] if ctx.VAR() else None
+        var = [x.getText for x in ctx.id_list().ID()] if ctx.VAR() else []
         stms = [self.visit(x) for x in ctx.stm()]
         ret = self.visit(ctx.exp())
         return FunAstNode(name, args, var, stms, ret);
