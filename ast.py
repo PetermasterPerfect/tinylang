@@ -7,7 +7,7 @@ import pdb
 class DotGraphElement:
     def __init__(self, name, label, sub_chain=[]):
         self.name = name
-        self.id = f'{name}_{randint(1, 1000000)}'
+        self.id = f'{name}_{randint(1, 1000000)}' # TODO: list of chosen ids as static variable so new id wont be the same
         self.label = label
         if type(sub_chain) is not list:
             self.sub_chain = [sub_chain]
@@ -16,7 +16,6 @@ class DotGraphElement:
 
     
     def print_dot(self):
-        #print('sub_chain:', self.sub_chain)
         if self.sub_chain:
             for i in self.sub_chain:
                 print(f'{self.id} -> {i}')
@@ -65,10 +64,10 @@ class FunAstNode():
 class AssignAstNode():
     def __init__(self, n, v):
         self.name = n
-        self.value = v
+        self.exp = v
 
     def draw_graph(self):
-        sub = self.value.draw_graph()
+        sub = self.exp.draw_graph()
         dot = DotGraphElement('assignment', f'{self.name}={sub.label}', sub.id)
         dot.print_dot()
         return dot
@@ -96,14 +95,19 @@ class IfAstNode():
         cond_node = self.cond.draw_graph()
         then_nodes = [x.draw_graph() for x in self.then]
         then_sub_chain = [x.id for x in then_nodes]
-        else_nodes = [x.draw_graph() for x in self.els]
-        else_sub_chain = [x.id for x in else_nodes]
-        else_node = DotGraphElement('else', 'else', else_sub_chain)
         then_node = DotGraphElement('then', 'then', then_sub_chain)
-        if_node = DotGraphElement('if', f'if {cond_node.label}', [cond_node.id, then_node.id, else_node.id])
+        if self.els:
+            else_nodes = [x.draw_graph() for x in self.els]
+            else_sub_chain = [x.id for x in else_nodes]
+            else_node = DotGraphElement('else', 'else', else_sub_chain)
+            sub_chain = [cond_node.id, then_node.id, else_node.id]
+        else:
+            sub_chain = [cond_node.id, then_node.id]
+        if_node = DotGraphElement('if', f'if {cond_node.label}', sub_chain)
         if_node.print_dot()
         then_node.print_dot()
-        else_node.print_dot()
+        if self.els:
+            else_node.print_dot()
         return if_node
         
 
@@ -112,6 +116,7 @@ class WhileAstNode():
         self.cond = c
         self.body = b
 
+
     def draw_graph(self):
         cond_node = self.cond.draw_graph()
         body_nodes = [x.draw_graph() for x in self.body]
@@ -119,7 +124,7 @@ class WhileAstNode():
         loop_node = DotGraphElement('loop', f'while {cond_node.label}', [cond_node.id]+sub_chain)
         loop_node.print_dot()
         return loop_node
-        
+
 
 class ExpAstNode():
     def __init__(self, s, o=None):
@@ -135,6 +140,16 @@ class ExpAstNode():
         dot.print_dot()
         return dot
         
+        
+    def get_used_vars(self):
+        ret_vars = []
+        for i in self.sub_exps:
+            if type(i) is IdAstNode:
+                ret_vars.append(i.name)
+            elif type(i) is ExpAstNode:
+                ret_vars += i.get_used_vars()
+        return ret_vars
+
  
 class NumAstNode():
     def __init__(self, v):
@@ -212,7 +227,7 @@ class TinyAstBuilder(tinyVisitor):
 
     def visitFun(self, ctx:tinyParser.FunContext):
         name, args = self.visit(ctx.fun_head())
-        var = [x.getText for x in ctx.id_list().ID()] if ctx.VAR() else []
+        var = [x.getText() for x in ctx.id_list().ID()] if ctx.VAR() else []
         stms = [self.visit(x) for x in ctx.stm()]
         ret = self.visit(ctx.exp())
         return FunAstNode(name, args, var, stms, ret);
