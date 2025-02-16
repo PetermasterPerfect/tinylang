@@ -1,6 +1,6 @@
 from ast import *
 
-
+#TODO: make cfg dot graph prettier
 
 def ast_to_cfg(stms):
     limit = []
@@ -22,7 +22,6 @@ def ast_to_cfg(stms):
                 branches.append(cond_cfg)
             for o in old:
                 o.successors.append(cond_cfg)
-            #print(cond_cfg.successors)
             old = []
             for b in branches:
                 old.append(b)
@@ -42,7 +41,7 @@ def ast_to_cfg(stms):
 
             old = [cond_cfg]
         else:
-            buf = StmCfg(stm.exp)
+            buf = StmCfg(stm)
             for o in old:
                 o.successors.append(buf)
             old = [buf]
@@ -67,6 +66,7 @@ class FunCfg:
                 for i in limit[1]:
                     i.successors.append(ret_node)
             self.start_stm = limit[0]
+            self.exit_stm = ret_node
         else:
             self.start_stm = None
 
@@ -88,7 +88,6 @@ class StmCfg:
             return
         else:
             tab.append(self)
-
         for s in self.successors:
             print(f'{st}{s}')
             s.print(f'{s} -> ')

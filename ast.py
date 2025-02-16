@@ -25,7 +25,16 @@ class DotGraphElement:
             print(f'{self.id} [label="{self.label}"]')
 
 
-class ProgramAstNode:
+class AstNode:
+    def draw_graph():
+        return None
+
+
+    def get_used_vars(self):
+        return set()
+
+
+class ProgramAstNode(AstNode):
     def __init__(self, fs):
         self.functions = fs
 
@@ -37,7 +46,7 @@ class ProgramAstNode:
         print('}')
 
 
-class FunAstNode():
+class FunAstNode(AstNode):
     def __init__(self, n, a, v, s, r):
         self.name = n
         self.args = a
@@ -61,11 +70,12 @@ class FunAstNode():
         return_node.print_dot()
         
 
-class AssignAstNode():
+class AssignAstNode(AstNode):
     def __init__(self, n, v):
         self.name = n
         self.exp = v
 
+    
     def draw_graph(self):
         sub = self.exp.draw_graph()
         dot = DotGraphElement('assignment', f'{self.name}={sub.label}', sub.id)
@@ -73,7 +83,7 @@ class AssignAstNode():
         return dot
 
 
-class OutputAstNode():
+class OutputAstNode(AstNode):
     def __init__(self, e):
         self.exp = e
 
@@ -84,8 +94,11 @@ class OutputAstNode():
         dot.print_dot()
         return dot
 
+    
+    def get_used_vars(self):
+        return self.exp.get_used_vars()
 
-class IfAstNode():
+class IfAstNode(AstNode):
     def __init__(self, c, t, e):
         self.cond = c
         self.then = t
@@ -111,7 +124,7 @@ class IfAstNode():
         return if_node
         
 
-class WhileAstNode():
+class WhileAstNode(AstNode):
     def __init__(self, c, b):
         self.cond = c
         self.body = b
@@ -126,7 +139,7 @@ class WhileAstNode():
         return loop_node
 
 
-class ExpAstNode():
+class ExpAstNode(AstNode):
     def __init__(self, s, o=None):
         self.sub_exps = s
         self.op = o
@@ -142,16 +155,13 @@ class ExpAstNode():
         
         
     def get_used_vars(self):
-        ret_vars = []
+        ret_vars = set()
         for i in self.sub_exps:
-            if type(i) is IdAstNode:
-                ret_vars.append(i.name)
-            elif type(i) is ExpAstNode:
-                ret_vars += i.get_used_vars()
+            ret_vars = ret_vars.union(i.get_used_vars())
         return ret_vars
 
  
-class NumAstNode():
+class NumAstNode(AstNode):
     def __init__(self, v):
         self.value = v
         
@@ -162,7 +172,7 @@ class NumAstNode():
         return dot
 
 
-class IdAstNode():
+class IdAstNode(AstNode):
     def __init__(self, n):
         self.name = n
 
@@ -173,7 +183,11 @@ class IdAstNode():
         return dot
 
 
-class FunCallAstNode():
+    def get_used_vars(self):
+        return {self.name}
+
+
+class FunCallAstNode(AstNode):
     def __init__(self, n, p):
         self.name = n
         self.params = p
@@ -188,8 +202,7 @@ class FunCallAstNode():
         return dot
 
 
-class InputAstNode():
-    
+class InputAstNode(AstNode):
     def draw_graph(self):
         dot = DotGraphElement('input', f'input')
         dot.print_dot()
