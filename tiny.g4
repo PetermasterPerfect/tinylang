@@ -29,7 +29,7 @@ exp: INT
 	| INPUT
 	| fun_call;
 
-fun_call: ID(exp_list?);
+fun_call: ID'('exp_list?')';
 
 ADD:'+';
 SUB:'-';
@@ -47,5 +47,5 @@ ELSE: 'else';
 WHILE: 'while';
 SEMI: ';';
 ID: [a-z]+;
-INT: '-'? [0-9]+;
+INT: [0-9]+;
 WS: [ \t\r\n]+ -> skip;

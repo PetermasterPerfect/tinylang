@@ -3,7 +3,7 @@ from tinyLexer import tinyLexer
 from tinyParser import tinyParser
 from ast import TinyAstBuilder
 from cfg import FunCfg
-from monotone_framework import MDFAF
+from monotone_framework import *
 import sys
 
 def main(argv):
@@ -19,11 +19,10 @@ def main(argv):
     ast = ast_builder.visit(tree)
     for f in ast.functions:
         fun_cfg = FunCfg(f)
+        a = AvailableExpressionsAnalysis(fun_cfg)
+        ins = MDFAF(fun_cfg, a)
         fun_cfg.print_all()
-        ins = MDFAF(fun_cfg)
         sol = ins.solve()
-        for s in sol:
-            print(f'{s} [label="{sol[s]}"]')
 
 if __name__ == "__main__":
     main(sys.argv)

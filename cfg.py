@@ -54,6 +54,31 @@ def ast_to_cfg(stms):
                 limit += old
     return limit
  
+def reverse_cfg(cfg):
+    def do_reversing(node, reversed_nodes=dict()):
+        for n in node.successors:
+            if n in reversed_nodes:
+                reversed_nodes[n].add(node)
+            else:
+                reversed_nodes[n] = {node}
+                reversed_nodes = do_reversing(n, reversed_nodes)
+        return reversed_nodes
+
+    ret = do_reversing(cfg.start_stm)
+    if cfg.start_stm not in ret:
+        ret[cfg.start_stm] = set()
+    return ret
+
+
+def cfg_dfs(node, tab=set()):
+    if node not in tab:
+        tab.add(node)
+    else:
+        return tab
+    for s in node.successors:
+        tab|=cfg_dfs(s, tab)
+    return tab 
+
 
 class FunCfg:
     def __init__(self, fun_ast_node):

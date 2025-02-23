@@ -160,6 +160,18 @@ class ExpAstNode(AstNode):
             ret_vars = ret_vars.union(i.get_used_vars())
         return ret_vars
 
+
+    def exps(self):
+        ret = {str(self)}
+        for e in self.sub_exps:
+            if type(e) is ExpAstNode:
+                ret |= e.exps()
+        return ret
+
+
+    def __str__(self):
+        return self.op.join([str(x) for x in self.sub_exps]) if self.op else str(self.sub_exps[0])
+
  
 class NumAstNode(AstNode):
     def __init__(self, v):
@@ -170,6 +182,10 @@ class NumAstNode(AstNode):
         dot = DotGraphElement('num',str(self.value))
         dot.print_dot()
         return dot
+
+
+    def __str__(self):
+        return str(self.value)
 
 
 class IdAstNode(AstNode):
@@ -185,6 +201,10 @@ class IdAstNode(AstNode):
 
     def get_used_vars(self):
         return {self.name}
+
+
+    def __str__(self):
+        return self.name
 
 
 class FunCallAstNode(AstNode):
