@@ -1,11 +1,18 @@
 twice() {
-	var x,y,z,a,b;
-	z = a+b;
-	y = a*b;
-	while (y > a+b) {
-		a = a+1;
-		x = a+b;
+	var x,y,z;
+	x = input;
+	while (x>1) {
+		y = x/2;
+		if (y>3) {
+			x = x-y;
+		}
+		z = x-4;
+		if (z>0) {
+			x = x/2;
+		}
+		z = z-1;
 	}
+	output x;
 	return 0;
 }
 

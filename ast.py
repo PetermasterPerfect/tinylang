@@ -228,6 +228,18 @@ class InputAstNode(AstNode):
         dot.print_dot()
         return dot
 
+    
+    def exps(self):
+        return {'input'}
+
+
+    def get_used_vars(self):
+        return set()
+
+
+    def __str__(self):
+        return 'input'
+
 
 def token_to_operator(ctx):
     if ctx.ADD():
