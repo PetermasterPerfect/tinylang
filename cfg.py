@@ -54,20 +54,15 @@ def ast_to_cfg(stms):
                 limit += old
     return limit
  
-def reverse_cfg(cfg):
-    def do_reversing(node, reversed_nodes=dict()):
-        for n in node.successors:
-            if n in reversed_nodes:
-                reversed_nodes[n].add(node)
-            else:
-                reversed_nodes[n] = {node}
-                reversed_nodes = do_reversing(n, reversed_nodes)
-        return reversed_nodes
 
-    ret = do_reversing(cfg.start_stm)
-    if cfg.start_stm not in ret:
-        ret[cfg.start_stm] = set()
-    return ret
+def reverse_dfs(node, tab=set()):
+    tab.add(node)
+    for s in node.predecessor:
+        print(f'{node} -> {s}')
+        if s not in tab:
+            reverse_dfs(s, tab)
+    return tab 
+
 
 
 def cfg_dfs(node, tab=set()):
@@ -95,11 +90,32 @@ class FunCfg:
         else:
             self.start_stm = None
 
+        self.reversal_mapping = self.reverse_cfg()
+
+
+    def reverse_cfg(self):
+        def do_reversing(node, reversed_nodes=dict()):
+            for n in node.successors:
+                if n in reversed_nodes:
+                    reversed_nodes[n].add(node)
+                    n.predecessors.add(node)
+                else:
+                    reversed_nodes[n] = {node}
+                    n.predecessors = {node}
+                    reversed_nodes = do_reversing(n, reversed_nodes)
+            return reversed_nodes
+
+        ret = do_reversing(self.start_stm)
+        if self.start_stm not in ret:
+            ret[self.start_stm] = set()
+            self.start_stm.predecessors = set()
+        return ret
+
 
     def print_all(self):
         print('digraph cfg{')
         self.start_stm.print(f'{self.start_stm} -> ')
-        print('}')
+        #print('}')
 
 
 class StmCfg:

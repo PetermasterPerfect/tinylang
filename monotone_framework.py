@@ -48,19 +48,19 @@ def exclude_substr_from_set(sub, base):
 
 class AvailableExpressionsAnalysis:
     def __init__(self, cfg):
-        AvailableExpressionsAnalysis.reversed_cfg = reverse_cfg(cfg)
         self.bound = None # TODO: explain why bound is None
-        self.lattice_bottom = self.extract_expressions_nodes()
+        self.lattice_bottom = self.extract_expressions_nodes(cfg)
 
 
-    def extract_expressions_nodes(self):
+    def extract_expressions_nodes(self,cfg):
         exp_nodes = set()
-        for k in AvailableExpressionsAnalysis.reversed_cfg:
-            for node in AvailableExpressionsAnalysis.reversed_cfg[k]:
+        for k in cfg.reversal_mapping:
+            for node in cfg.reversal_mapping[k]:
                 if type(node.ast_node) is ExpAstNode:
                     exp_nodes.add(node.ast_node)
                 elif type(node.ast_node) in [AssignAstNode, OutputAstNode]:
-                    exp_nodes.add(node.ast_node.exp)
+                    if type(node.ast_node.exp) is ExpAstNode:
+                        exp_nodes.add(node.ast_node.exp)
         ret = set()
         for e in exp_nodes:
             ret |= e.exps()
@@ -69,7 +69,7 @@ class AvailableExpressionsAnalysis:
 
     def exp_f(constraints, node):
         ret = set()
-        for p in AvailableExpressionsAnalysis.reversed_cfg[node]:
+        for p in node.predecessors:
             current_const = constraints[p]
             if len(ret) == 0:
                 ret = current_const.copy()
@@ -85,7 +85,7 @@ class AvailableExpressionsAnalysis:
     def assignment_f(constraints, node):
         ret = set()
         var_name = node.ast_node.name
-        for p in AvailableExpressionsAnalysis.reversed_cfg[node]:
+        for p in node.predecessors:
             current_const = exclude_substr_from_set(var_name, constraints[p])
             if len(ret) == 0:
                 ret = current_const.copy()
@@ -169,7 +169,6 @@ class VeryBusyExpressionsAnalysis:
         if type(node.ast_node.exp) is ExpAstNode:
             exps = node.ast_node.exp.exps()
             ret |= exps
-        #print(ret)
         return ret
 
 
@@ -191,7 +190,6 @@ class VeryBusyExpressionsAnalysis:
 
 class ReachingDefinitionsAnalysis:
     def __init__(self, cfg):
-        ReachingDefinitionsAnalysis.reversed_cfg = reverse_cfg(cfg)
         self.bound = None # TODO: explain why bound is None
         self.lattice_bottom = set()
         print(self.lattice_bottom)
@@ -199,7 +197,7 @@ class ReachingDefinitionsAnalysis:
 
     def exp_f(constraints, node):
         ret = set()
-        for p in ReachingDefinitionsAnalysis.reversed_cfg[node]:
+        for p in node.predecessors:
             current_const = constraints[p]
             if len(ret) == 0:
                 ret = current_const.copy()
@@ -211,7 +209,7 @@ class ReachingDefinitionsAnalysis:
     def assignment_f(constraints, node):
         ret = set()
         var_name = node.ast_node.name
-        for p in ReachingDefinitionsAnalysis.reversed_cfg[node]:
+        for p in node.predecessors:
             current_const = exclude_substr_from_set(var_name, constraints[p])
             if len(ret) == 0:
                 ret = current_const.copy()
@@ -238,8 +236,6 @@ class ReachingDefinitionsAnalysis:
         return fun_constraints
 
 
-
-
 class MDFAF: # monotone data flow analysis framework
     def __init__(self, graph, model_analysis):
         self.function_vars = graph.ast_node.vars
@@ -259,5 +255,4 @@ class MDFAF: # monotone data flow analysis framework
 
         for i in sol:
             print(f'{i} [label="{sol[i]}"]')
-        print(self.nodes)
         return sol

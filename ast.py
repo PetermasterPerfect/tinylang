@@ -203,6 +203,10 @@ class IdAstNode(AstNode):
         return {self.name}
 
 
+    def exps(self):
+        return set()
+
+
     def __str__(self):
         return self.name
 

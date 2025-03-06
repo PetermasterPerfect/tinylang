@@ -19,11 +19,13 @@ def main(argv):
     ast = ast_builder.visit(tree)
     for f in ast.functions:
         fun_cfg = FunCfg(f)
-        a = ReachingDefinitionsAnalysis(fun_cfg)
-        ins = MDFAF(fun_cfg, a)
-        fun_cfg.print_all()
-        sol = ins.solve()
-        print(sol)
+        for analysis in [AvailableExpressionsAnalysis, LiveVariablesAnalysis, ReachingDefinitionsAnalysis, VeryBusyExpressionsAnalysis]:
+            fun_cfg.print_all()
+            monotone = MDFAF(fun_cfg, analysis(fun_cfg))
+            sol = monotone.solve()
+            print('}')
+
+
 
 if __name__ == "__main__":
     main(sys.argv)
