@@ -20,10 +20,16 @@ def main(argv):
     for f in ast.functions:
         fun_cfg = FunCfg(f)
         for analysis in [AvailableExpressionsAnalysis, LiveVariablesAnalysis, ReachingDefinitionsAnalysis, VeryBusyExpressionsAnalysis]:
-            fun_cfg.print_all()
             monotone = MDFAF(fun_cfg, analysis(fun_cfg))
-            sol = monotone.solve()
-            print('}')
+            #fun_cfg.print_all()
+            sol = monotone.fixed_point_solve()
+            print(sol)
+            #print('}')
+            #fun_cfg.print_all()
+            sol = monotone.simple_worklist_solve()
+            print(sol)
+            #print('}')
+            print('-------')
 
 
 

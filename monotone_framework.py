@@ -1,4 +1,4 @@
-import types
+from random import randint, choice
 from cfg import *
 from ast import *
 
@@ -7,6 +7,10 @@ class LiveVariablesAnalysis:
     def __init__(self, cfg):
         self.lattice_bottom = set()
         self.bound = cfg.exit_stm
+
+
+    def dependencies(self, node):
+        return [x for x in node.predecessors]
 
 
     def exp_f(constraints, node):
@@ -50,6 +54,10 @@ class AvailableExpressionsAnalysis:
     def __init__(self, cfg):
         self.bound = None # TODO: explain why bound is None
         self.lattice_bottom = self.extract_expressions_nodes(cfg)
+
+    
+    def dependencies(self, node):
+        return [x for x in node.successors]
 
 
     def extract_expressions_nodes(self,cfg):
@@ -117,6 +125,10 @@ class VeryBusyExpressionsAnalysis:
     def __init__(self, cfg):
         self.bound = cfg.exit_stm
         self.lattice_bottom = self.extract_expressions_nodes(cfg)
+
+
+    def dependencies(self, node):
+        return [x for x in node.predecessors]
 
 
     def extract_expressions_nodes(self, cfg):
@@ -195,6 +207,10 @@ class ReachingDefinitionsAnalysis:
         print(self.lattice_bottom)
 
 
+    def dependencies(self, node):
+        return [x for x in node.successors]
+
+
     def exp_f(constraints, node):
         ret = set()
         for p in node.predecessors:
@@ -245,7 +261,7 @@ class MDFAF: # monotone data flow analysis framework
         self.fun_constraints = self.model_analysis.constraints_from_cfg(self.nodes)
 
 
-    def solve(self):
+    def fixed_point_solve(self):
         sol = dict(zip(self.nodes, [self.model_analysis.lattice_bottom.copy() for x in self.fun_constraints]))
         f = dict(zip(self.nodes, [ self.fun_constraints[e](sol, self.nodes[i]) for i, e in enumerate(self.fun_constraints) ]))
         while sol != f:
@@ -253,6 +269,37 @@ class MDFAF: # monotone data flow analysis framework
                 sol[e] = self.fun_constraints[e](sol, e)
             f = dict(zip(self.nodes, [ self.fun_constraints[e](sol, self.nodes[i]) for i, e in enumerate(self.fun_constraints) ]))
 
+        #for i in sol:
+        #    print(f'{i} [label="{sol[i]}"]')
+        return sol
+
+
+    def chaotic_solve(self):
+        sol = dict(zip(self.nodes, [self.model_analysis.lattice_bottom.copy() for x in self.fun_constraints]))
+        f = dict(zip(self.nodes, [ self.fun_constraints[e](sol, self.nodes[i]) for i, e in enumerate(self.fun_constraints) ]))
+        while sol != f:
+            rand_node = choice(self.nodes)
+            sol[rand_node] = self.fun_constraints[rand_node](sol, rand_node)
+            f = dict(zip(self.nodes, [ self.fun_constraints[e](sol, self.nodes[i]) for i, e in enumerate(self.fun_constraints) ]))
+
         for i in sol:
             print(f'{i} [label="{sol[i]}"]')
         return sol
+
+
+    def simple_worklist_solve(self):
+        sol = dict(zip(self.nodes, [self.model_analysis.lattice_bottom.copy() for x in self.fun_constraints]))
+        W = [x for x in self.nodes]
+        #breakpoint()
+        while W:
+            v = W.pop()#(randint(0, len(W)-1))
+            y = self.fun_constraints[v](sol, v)
+            if y != sol[v]:
+                sol[v] = y
+                W += self.model_analysis.dependencies(v)
+                #print(f'{len(W)=}')
+        #for i in sol:
+        #    print(f'{i} [label="{sol[i]}"]')
+        return sol
+        
+

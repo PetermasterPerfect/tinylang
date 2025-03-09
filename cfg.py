@@ -124,11 +124,17 @@ class StmCfg:
         self.successors = []
 
 
-    def print(self, st='', tab=[]):
+    def print(self, st=None, tab=None):
+        if st is None:
+            st = ''
+        if tab is None:
+            tab = []
+
         if self in tab:
             return
         else:
             tab.append(self)
+
         for s in self.successors:
             print(f'{st}{s}')
-            s.print(f'{s} -> ')
+            s.print(f'{s} -> ', tab)
