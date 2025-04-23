@@ -26,7 +26,7 @@ class DotGraphElement:
 
 
 class AstNode:
-    def draw_graph():
+    def dump_2_dot():
         return None
 
 
@@ -39,10 +39,10 @@ class ProgramAstNode(AstNode):
         self.functions = fs
 
 
-    def draw_graph(self):
+    def dump_2_dot(self):
         print('digraph ast {')
         for f in self.functions:
-            f.draw_graph()
+            f.dump_2_dot()
         print('}')
 
 
@@ -55,12 +55,12 @@ class FunAstNode(AstNode):
         self.ret = r
 
 
-    def draw_graph(self):
-        sub_stms = [x.draw_graph() for x in self.stms]
+    def dump_2_dot(self):
+        sub_stms = [x.dump_2_dot() for x in self.stms]
         label = [x.label for x in sub_stms]
         sub_chain = [x.id for x in sub_stms]
 
-        sub_ret = self.ret.draw_graph()
+        sub_ret = self.ret.dump_2_dot()
         return_node = DotGraphElement('ret', f'return {sub_ret.label}', sub_ret.id)
 
         header_label = f'{self.name}({", ".join(self.args)})\\n'
@@ -75,10 +75,14 @@ class AssignAstNode(AstNode):
         self.name = n
         self.exp = v
 
+
+    def label(self):
+        return f'{self.name}={self.exp.label()}'
     
-    def draw_graph(self):
-        sub = self.exp.draw_graph()
-        dot = DotGraphElement('assignment', f'{self.name}={sub.label}', sub.id)
+
+    def dump_2_dot(self):
+        sub = self.exp.dump_2_dot()
+        dot = DotGraphElement('assignment', self.label(), sub.id)
         dot.print_dot()
         return dot
 
@@ -87,10 +91,13 @@ class OutputAstNode(AstNode):
     def __init__(self, e):
         self.exp = e
 
+   
+    def label(self):
+        return f'output {self.exp.label()}'
     
-    def draw_graph(self):
-        exp = self.exp.draw_graph()
-        dot = DotGraphElement('output', f'output {exp.label}', exp.id)
+    def dump_2_dot(self):
+        exp = self.exp.dump_2_dot()
+        dot = DotGraphElement('output', self.label(), exp.id)
         dot.print_dot()
         return dot
 
@@ -104,19 +111,24 @@ class IfAstNode(AstNode):
         self.then = t
         self.els = e
 
-    def draw_graph(self):
-        cond_node = self.cond.draw_graph()
-        then_nodes = [x.draw_graph() for x in self.then]
+    
+    def label(self):
+        return f'if {self.cond.label()}'
+
+
+    def dump_2_dot(self):
+        cond_node = self.cond.dump_2_dot()
+        then_nodes = [x.dump_2_dot() for x in self.then]
         then_sub_chain = [x.id for x in then_nodes]
         then_node = DotGraphElement('then', 'then', then_sub_chain)
         if self.els:
-            else_nodes = [x.draw_graph() for x in self.els]
+            else_nodes = [x.dump_2_dot() for x in self.els]
             else_sub_chain = [x.id for x in else_nodes]
             else_node = DotGraphElement('else', 'else', else_sub_chain)
             sub_chain = [cond_node.id, then_node.id, else_node.id]
         else:
             sub_chain = [cond_node.id, then_node.id]
-        if_node = DotGraphElement('if', f'if {cond_node.label}', sub_chain)
+        if_node = DotGraphElement('if', self.label(), sub_chain)
         if_node.print_dot()
         then_node.print_dot()
         if self.els:
@@ -130,11 +142,15 @@ class WhileAstNode(AstNode):
         self.body = b
 
 
-    def draw_graph(self):
-        cond_node = self.cond.draw_graph()
-        body_nodes = [x.draw_graph() for x in self.body]
+    def label(self):
+        return f'while {self.cond.label()}'
+
+
+    def dump_2_dot(self):
+        cond_node = self.cond.dump_2_dot()
+        body_nodes = [x.dump_2_dot() for x in self.body]
         sub_chain = [x.id for x in body_nodes]
-        loop_node = DotGraphElement('loop', f'while {cond_node.label}', [cond_node.id]+sub_chain)
+        loop_node = DotGraphElement('loop', self.label(), [cond_node.id]+sub_chain)
         loop_node.print_dot()
         return loop_node
 
@@ -144,12 +160,15 @@ class ExpAstNode(AstNode):
         self.sub_exps = s
         self.op = o
 
+    
+    def label(self):
+        return self.op.join([x.label() for x in self.sub_exps]) if self.op else self.sub_exps[0].label()
 
-    def draw_graph(self):
-        sub_exp = [x.draw_graph() for x in self.sub_exps]
-        label = self.op.join([x.label for x in sub_exp]) if self.op else sub_exp[0].label
+
+    def dump_2_dot(self):
+        sub_exp = [x.dump_2_dot() for x in self.sub_exps]
         sub_chain = [x.id for x in sub_exp]
-        dot = DotGraphElement('exp', label, sub_chain)
+        dot = DotGraphElement('exp', self.label(), sub_chain)
         dot.print_dot()
         return dot
         
@@ -176,9 +195,13 @@ class ExpAstNode(AstNode):
 class NumAstNode(AstNode):
     def __init__(self, v):
         self.value = v
+
+
+    def label(self):
+        return f'{self.value}'
         
 
-    def draw_graph(self):
+    def dump_2_dot(self):
         dot = DotGraphElement('num',str(self.value))
         dot.print_dot()
         return dot
@@ -193,7 +216,11 @@ class IdAstNode(AstNode):
         self.name = n
 
 
-    def draw_graph(self):
+    def label(self):
+        return f'{self.name}'
+
+
+    def dump_2_dot(self):
         dot = DotGraphElement('id', self.name)
         dot.print_dot()
         return dot
@@ -217,20 +244,28 @@ class FunCallAstNode(AstNode):
         self.params = p
 
 
-    def draw_graph(self):
-        sub_exp = [x.draw_graph() for x in self.params]
-        label = ', '.join([x.label for x in sub_exp])
+    def label(self):
+        args = ', '.join([x.label() for x in self.params])
+        return f'{name}({args})'
+
+
+    def dump_2_dot(self):
+        sub_exp = [x.dump_2_dot() for x in self.params]
         sub_chain = [x.id for x in sub_exp]
-        dot = DotGraphElement('fun', f'{name}({label})', sub_chain)
+        dot = DotGraphElement('fun', self.label(), sub_chain)
         dot.print_dot()
         return dot
 
 
 class InputAstNode(AstNode):
-    def draw_graph(self):
+    def dump_2_dot(self):
         dot = DotGraphElement('input', f'input')
         dot.print_dot()
         return dot
+
+    
+    def label(self):
+        return 'input'
 
     
     def exps(self):

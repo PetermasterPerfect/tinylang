@@ -112,10 +112,10 @@ class FunCfg:
         return ret
 
 
-    def print_all(self):
+    def dump_2_dot(self):
         print('digraph cfg{')
-        self.start_stm.print(f'{self.start_stm} -> ')
-        #print('}')
+        self.start_stm.dump_2_dot(f'{self.start_stm} -> ')
+        print('}')
 
 
 class StmCfg:
@@ -124,7 +124,7 @@ class StmCfg:
         self.successors = []
 
 
-    def print(self, st=None, tab=None):
+    def dump_2_dot(self, st=None, tab=None):
         if st is None:
             st = ''
         if tab is None:
@@ -135,6 +135,7 @@ class StmCfg:
         else:
             tab.append(self)
 
+        print(f'{self} [label="{self.ast_node.label()}"]')
         for s in self.successors:
             print(f'{st}{s}')
-            s.print(f'{s} -> ', tab)
+            s.dump_2_dot(f'{s} -> ', tab)

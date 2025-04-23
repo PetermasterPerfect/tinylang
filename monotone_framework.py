@@ -290,16 +290,12 @@ class MDFAF: # monotone data flow analysis framework
     def simple_worklist_solve(self):
         sol = dict(zip(self.nodes, [self.model_analysis.lattice_bottom.copy() for x in self.fun_constraints]))
         W = [x for x in self.nodes]
-        #breakpoint()
         while W:
-            v = W.pop()#(randint(0, len(W)-1))
+            v = W.pop()
             y = self.fun_constraints[v](sol, v)
             if y != sol[v]:
                 sol[v] = y
                 W += self.model_analysis.dependencies(v)
-                #print(f'{len(W)=}')
-        #for i in sol:
-        #    print(f'{i} [label="{sol[i]}"]')
         return sol
         
 

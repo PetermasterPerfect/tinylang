@@ -5,6 +5,8 @@ twice() {
 	y = x/2;
 	if (y>3) {
 		x = x-y;
+	} else {
+		x = x-1;
 	}
 	z = x-4;
 	if (z>0) {
