@@ -4,6 +4,7 @@ from tinyParser import tinyParser
 from ast import TinyAstBuilder
 from cfg import FunCfg
 from monotone_framework import *
+from dominators import *
 import sys
 
 
@@ -34,7 +35,9 @@ def main(argv):
 
     for f in ast.functions:
         fun_cfg = FunCfg(f)
-        fun_cfg.dump_2_dot()
+        #fun_cfg.dump_2_dot()
+        root = RootTree(fun_cfg)
+        root.dominators()
 
 if __name__ == "__main__":
     main(sys.argv)

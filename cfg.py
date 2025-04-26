@@ -77,13 +77,40 @@ def cfg_dfs(node, tab=set()):
 
 class FunCfg:
     def __init__(self, fun_ast_node):
+        def flatten_list(l):
+            ret = []
+            for i in l:
+                if type(i) is list:
+                    ret += flatten_list(i)
+                else:
+                    ret.append(i)
+            return ret
+
         self.ast_node = fun_ast_node
         if limit := ast_to_cfg(fun_ast_node.stms):
             ret_node = StmCfg(fun_ast_node.ret)
             if type(limit[1]) is not list:
                 limit[1].successors.append(ret_node)
             else:
-                for i in limit[1]:
+                for i in flatten_list(limit[1]):
+                    """
+                    Solution with flatten_list is naive. 
+                    TODO: limit[1] should contain list of predecessors of return node.
+                    Now it can containts list of list(when last instuctions is conditional instruction with nested conditional instructions).
+                    Thats why I solve this problem with flattening but still ast_to_cfg returns ugly list
+                    e.g.
+                    foo() {
+                        var x, y;
+                        if(1) {
+                            if(2) { x=2; } 
+                            else { y=3; }
+                        } else {
+                            if(x==2) { y=2; }
+                            else { x=3; }
+                        }
+                        return 0;
+                    }
+                    """
                     i.successors.append(ret_node)
             self.start_stm = limit[0]
             self.exit_stm = ret_node
