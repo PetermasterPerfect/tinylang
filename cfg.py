@@ -1,6 +1,14 @@
 from ast import *
 
 #TODO: make cfg dot graph prettier
+def flatten_list(l):
+    ret = []
+    for i in l:
+        if type(i) is list:
+            ret += flatten_list(i)
+        else:
+            ret.append(i)
+    return ret
 
 def ast_to_cfg(stms):
     limit = []
@@ -20,7 +28,7 @@ def ast_to_cfg(stms):
                     cond_cfg.successors.append(else_limit[0])
             else:
                 branches.append(cond_cfg)
-            for o in old:
+            for o in flatten_list(old):
                 o.successors.append(cond_cfg)
             old = []
             for b in branches:
@@ -36,13 +44,13 @@ def ast_to_cfg(stms):
                 else:
                     for j in body_limit[1]:
                         j.successors.append(cond_cfg)
-            for o in old:
+            for o in flatten_list(old):
                 o.successors.append(cond_cfg)
 
             old = [cond_cfg]
         else:
             buf = StmCfg(stm)
-            for o in old:
+            for o in flatten_list(old):
                 o.successors.append(buf)
             old = [buf]
         if i == 0 and not limit:
@@ -77,14 +85,7 @@ def cfg_dfs(node, tab=set()):
 
 class FunCfg:
     def __init__(self, fun_ast_node):
-        def flatten_list(l):
-            ret = []
-            for i in l:
-                if type(i) is list:
-                    ret += flatten_list(i)
-                else:
-                    ret.append(i)
-            return ret
+
 
         self.ast_node = fun_ast_node
         if limit := ast_to_cfg(fun_ast_node.stms):

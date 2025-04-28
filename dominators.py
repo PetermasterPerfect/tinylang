@@ -11,7 +11,6 @@ class RootTree():
         self.order = dict()
         self.tree = dict()
         self.cfg_dfs_order(cfg.start_stm)
-        print([(x.ast_node.label(), self.order[x]) for x in self.order])
         self.root = dict(zip([x for x in self.order], [x for x in self.order]))
         self.sd = dict()
 
@@ -88,6 +87,8 @@ class RootTree():
                 idoms[w] = self.sd[w]
             else:
                 idoms[w] = self.order[internals[w]]
+
+        return idoms
 
 
 
