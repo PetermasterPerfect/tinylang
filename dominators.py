@@ -2,17 +2,22 @@ from cfg import *
 from math import inf
 """
 based on 
+(fast algorithm for findign dominators)
 https://www.cs.utexas.edu/~misra/Lengauer+Tarjan.pdf
 https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf
+
+(finding dominance frontiers)
+https://www.cs.utexas.edu/~pingali/CS380C/2010/papers/ssaCytron.pdf
 """
 
-class RootTree():
+class DominatorsTree():
     def __init__(self, cfg):
         self.order = dict()
         self.tree = dict()
         self.cfg_dfs_order(cfg.start_stm)
         self.root = dict(zip([x for x in self.order], [x for x in self.order]))
         self.sd = dict()
+        self.idoms = self.dominators()
 
 
     def cfg_dfs_order(self, node, i=0, parent=None):
@@ -44,6 +49,7 @@ class RootTree():
         for v, n in self.order.items():
             if n==i:
                 return v
+        raise ValueError(f"Given node number does not exis: {i}")
 
 
     def compute_sd2(self, r, n):
@@ -87,8 +93,29 @@ class RootTree():
                 idoms[w] = self.sd[w]
             else:
                 idoms[w] = self.order[internals[w]]
-
         return idoms
 
+    
+class DominanceFrontier(DominatorsTree):
+    def __init__(self, cfg):
+        super(DominanceFrontier, self).__init__(cfg)
+        self.dom_tree = self.dominance_tree()
+        self.dom_frontier = dict()
+
+        for x in sorted(self.order, key=self.order.get, reverse=True):
+            self.dom_frontier[x] = set()
+            for y in x.successors:
+                if self.vertex(self.idoms[y]) != x:
+                    self.dom_frontier[x] |= {y}
+            for z in self.dom_tree[x]:
+                for y in self.dom_frontier[z]:
+                    if self.vertex(self.idoms[y]) != x:
+                        self.dom_frontier[x] |= {y}
 
 
+    def dominance_tree(self):
+        dom_tree = dict(zip([x for x in self.order], [set() for x in self.order]))
+        for node in self.tree:
+            if self.tree[node] is not None:
+                dom_tree[self.tree[node]] |= {node}
+        return dom_tree

@@ -7,7 +7,6 @@ from monotone_framework import *
 from dominators import *
 import sys
 
-
 def test_monotone_framework(ast):
     for f in ast.functions:
             fun_cfg = FunCfg(f)
@@ -36,8 +35,13 @@ def main(argv):
     for f in ast.functions:
         fun_cfg = FunCfg(f)
         #fun_cfg.dump_2_dot()
-        root = RootTree(fun_cfg)
-        root.dominators()
+        dom_tree = DominatorsTree(fun_cfg)
+        print(dom_tree.idoms)
+        dom_front = DominanceFrontier(fun_cfg)
+        for x in dom_front.dom_frontier:
+            print(x.ast_node.label())
+            for y in dom_front.dom_frontier[x]:
+                print('\t'+y.ast_node.label())
 
 if __name__ == "__main__":
     main(sys.argv)
