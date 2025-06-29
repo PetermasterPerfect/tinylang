@@ -1,5 +1,5 @@
 grammar tiny;
-// tiny (very) version of tiny language
+// (very) tiny version of tiny language
 // no pointer, function as value and records
 
 program: fun*;

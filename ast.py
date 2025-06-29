@@ -30,6 +30,10 @@ class AstNode:
         return None
 
 
+    def exps(self):
+        return set()
+
+
     def get_used_vars(self):
         return set()
 
@@ -80,6 +84,10 @@ class AssignAstNode(AstNode):
         return f'{self.name}={self.exp.label()}'
     
 
+    def exps(self):
+        return self.exp
+
+
     def dump_2_dot(self):
         sub = self.exp.dump_2_dot()
         dot = DotGraphElement('assignment', self.label(), sub.id)
@@ -91,7 +99,11 @@ class OutputAstNode(AstNode):
     def __init__(self, e):
         self.exp = e
 
-   
+
+    def exps(self):
+        return self.exp.exps()
+
+
     def label(self):
         return f'output {self.exp.label()}'
     
@@ -104,6 +116,7 @@ class OutputAstNode(AstNode):
     
     def get_used_vars(self):
         return self.exp.get_used_vars()
+
 
 class IfAstNode(AstNode):
     def __init__(self, c, t, e):
@@ -159,6 +172,7 @@ class ExpAstNode(AstNode):
     def __init__(self, s, o=None):
         self.sub_exps = s
         self.op = o
+        self.exp = self
 
     
     def label(self):
@@ -194,6 +208,7 @@ class ExpAstNode(AstNode):
  
 class NumAstNode(AstNode):
     def __init__(self, v):
+        #super(NumAstNode,self).__init__()
         self.value = v
 
 

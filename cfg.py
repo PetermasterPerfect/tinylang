@@ -1,4 +1,5 @@
 from ast import *
+from llvmlite import ir
 
 #TODO: make cfg dot graph prettier
 def flatten_list(l):
@@ -17,13 +18,16 @@ def ast_to_cfg(stms):
         stm = stms[i]
         if type(stm) is IfAstNode:
             cond_cfg = StmCfg(stm.cond)
+            cond_cfg.annots = {'then':False, 'else':True}
             if i == 0:
                 limit.append(cond_cfg)
             if then_limit := ast_to_cfg(stm.then):
+                cond_cfg.annots['then'] = True
                 branches = [then_limit[1]]
                 cond_cfg.successors.append(then_limit[0])
             if stm.els:
                 if else_limit := ast_to_cfg(stm.els):
+                    cond_cfg.annots['else'] = True
                     branches.append(else_limit[1])
                     cond_cfg.successors.append(else_limit[0])
             else:
@@ -35,9 +39,11 @@ def ast_to_cfg(stms):
                 old.append(b)
         elif type(stm) is WhileAstNode:
             cond_cfg = StmCfg(stm.cond)
+            cond_cfg.annots = {'then':False, 'else':True}
             if i == 0:
                 limit.append(cond_cfg)
             if body_limit := ast_to_cfg(stm.body):
+                cond_cfg.annots['then'] = True
                 cond_cfg.successors.append(body_limit[0])
                 if type(body_limit[1]) is not list:
                     body_limit[1].successors.append(cond_cfg)
@@ -85,8 +91,6 @@ def cfg_dfs(node, tab=set()):
 
 class FunCfg:
     def __init__(self, fun_ast_node):
-
-
         self.ast_node = fun_ast_node
         if limit := ast_to_cfg(fun_ast_node.stms):
             ret_node = StmCfg(fun_ast_node.ret)
@@ -119,6 +123,14 @@ class FunCfg:
             self.start_stm = None
 
         self.reversal_mapping = self.reverse_cfg()
+
+
+    def compile_to_llvm_ir():
+        double = ir.DoubleType()
+        func_type = ir.FunctionType(double, (double for x in self.ast_node.args))
+        module = ir.Module(name='changeit')
+        func_ir = ir.Function(module, func_type, self.ast_node.name)
+
 
 
     def reverse_cfg(self):

@@ -6,7 +6,7 @@ based on
 https://www.cs.utexas.edu/~misra/Lengauer+Tarjan.pdf
 https://www.cs.princeton.edu/courses/archive/fall03/cs528/handouts/a%20fast%20algorithm%20for%20finding.pdf
 
-(finding dominance frontiers)
+(algorithm for finding dominance frontiers)
 https://www.cs.utexas.edu/~pingali/CS380C/2010/papers/ssaCytron.pdf
 """
 

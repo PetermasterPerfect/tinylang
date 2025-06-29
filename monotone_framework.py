@@ -9,6 +9,10 @@ class LiveVariablesAnalysis:
         self.bound = cfg.exit_stm
 
 
+    def operator(self, n1, n2):
+        return n1 | n2
+
+
     def dependencies(self, node):
         return [x for x in node.predecessors]
 
@@ -54,6 +58,10 @@ class AvailableExpressionsAnalysis:
     def __init__(self, cfg):
         self.bound = None # TODO: explain why bound is None
         self.lattice_bottom = self.extract_expressions_nodes(cfg)
+
+
+    def operator(self, n1, n2):
+        return n1 & n2
 
     
     def dependencies(self, node):
@@ -127,6 +135,10 @@ class VeryBusyExpressionsAnalysis:
         self.lattice_bottom = self.extract_expressions_nodes(cfg)
 
 
+    def operator(self, n1, n2):
+        return n1 & n2
+
+
     def dependencies(self, node):
         return [x for x in node.predecessors]
 
@@ -159,19 +171,30 @@ class VeryBusyExpressionsAnalysis:
                 ret = current_const.copy()
             else:
                 ret &= current_const
-        if type(node.ast_node) is ExpAstNode:
-            ret |= node.ast_node.exps() 
-        else:
-            ret |= node.ast_node.exp.exps() 
+        ret |= node.ast_node.exps() 
         return ret
+
+
+    def transfer_f(joined, node):
+        if type(node.ast_node) is AssignAstNode:
+            var_name = node.ast_node.name
+            joined = exclude_substr_from_set(var_name, joined)
+
+        #breakpoint()
+        if type(node.ast_node) is ExpAstNode:
+            exps = node.ast_node.exps()
+            joined |= exps
+        elif type(node.ast_node) is AssignAstNode:
+            exps = node.ast_node.exps().exps()
+            joined |= exps
+            
+
+        return joined
 
 
     def assignment_f(constraints, node):
         ret = set()
         var_name = node.ast_node.name
-        if var_name == 'x':
-            pass
-            #breakpoint()
         for p in node.successors:
             current_const = exclude_substr_from_set(var_name, constraints[p])
             if len(ret) == 0:
@@ -204,7 +227,11 @@ class ReachingDefinitionsAnalysis:
     def __init__(self, cfg):
         self.bound = None # TODO: explain why bound is None
         self.lattice_bottom = set()
-        print(self.lattice_bottom)
+        #print(self.lattice_bottom)
+
+
+    def operator(self, n1, n2):
+        return n1 | n2
 
 
     def dependencies(self, node):
@@ -282,8 +309,8 @@ class MDFAF: # monotone data flow analysis framework
             sol[rand_node] = self.fun_constraints[rand_node](sol, rand_node)
             f = dict(zip(self.nodes, [ self.fun_constraints[e](sol, self.nodes[i]) for i, e in enumerate(self.fun_constraints) ]))
 
-        for i in sol:
-            print(f'{i} [label="{sol[i]}"]')
+        #for i in sol:
+        #    print(f'{i} [label="{sol[i]}"]')
         return sol
 
 
@@ -299,3 +326,23 @@ class MDFAF: # monotone data flow analysis framework
         return sol
         
 
+    def propagation_worklist_solve(self):
+        sol = dict(zip(self.nodes, [self.model_analysis.lattice_bottom.copy() for x in self.fun_constraints]))
+        sol[self.cfg.exit_stm] = set()
+        W = [x for x in self.nodes]
+        for x in W:
+            print(f'{x} : {x.ast_node.label()}')
+
+        while W:
+            v = W.pop()
+            #if type(v.ast_node) is NumAstNode:
+            #    breakpoint()
+            #y = self.fun_constraints[v](sol, v)
+            y = VeryBusyExpressionsAnalysis.transfer_f(sol[v], v)
+            for d in self.model_analysis.dependencies(v):
+                print(y, sol[d])
+                z = self.model_analysis.operator(y, sol[d])
+                if z != sol[d]:
+                    sol[d] = z
+                W.append(d)
+        return sol
