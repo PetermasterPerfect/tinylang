@@ -2,12 +2,15 @@ from antlr4 import *
 from time import *
 from tinyLexer import tinyLexer
 from tinyParser import tinyParser
-from ast import TinyAstBuilder
+from ast_builder import TinyAstBuilder
 from cfg import FunCfg
 from monotone_framework import *
 from dominators import *
 import sys
 from compiler import *
+from ctypes import CFUNCTYPE, c_double
+import llvmlite.binding as llvm
+#java -jar antlr-4.13.2-complete.jar -Dlanguage=Python3 -no-listener -visitor tiny.g4 
 
 def time_test_monotone_framework(ast):
     for f in ast.functions:
@@ -61,6 +64,22 @@ def test_dominators(ast):
             for y in dom_front.dom_frontier[x]:
                 print('\t'+y.ast_node.label())
 
+def create_execution_engine():
+    target = llvm.Target.from_default_triple()
+    target_machine = target.create_target_machine()
+    backing_mod = llvm.parse_assembly("")
+    engine = llvm.create_mcjit_compiler(backing_mod, target_machine)
+    return engine
+
+def compile_ir(engine, llvm_ir):
+    mod = llvm.parse_assembly(llvm_ir)
+    mod.verify()
+    engine.add_module(mod)
+    engine.finalize_object()
+    engine.run_static_constructors()
+    return mod
+
+
 def main(argv):
     if len(argv)<2:
         print('usage: tinylang.py <script_name>\n')
@@ -72,15 +91,25 @@ def main(argv):
     tree = parser.program()
     ast_builder = TinyAstBuilder()
     ast = ast_builder.visit(tree)
-
     module = ir.Module(name=argv[1])
+    states = []
+    names = {x.name for x in ast.functions}
+    if len(names) < len(ast.functions):
+        raise Exception("Functions with same name")
     for f in ast.functions:
-        fun_cfg = FunCfg(f)
-        fun_cfg.dump_2_dot()
-        #f_comp = FuncCompiler(module, fun_cfg)
-        #f_comp.compile_function()
-    print(module)
+        states.append(FunCompileState(f, module))
 
+    for i in range(len(ast.functions)):
+        ast.functions[i].compile(states[i])
+    print(module)
+    llvm.initialize_native_target()
+    llvm.initialize_native_asmprinter()
+    engine = create_execution_engine()
+    mod = compile_ir(engine, str(module))
+    func_ptr = engine.get_function_address("xoo")
+    cfunc = CFUNCTYPE(c_double, c_double)(func_ptr)
+    res = cfunc(10)
+    print("xoo(...) =", res)
 
 if __name__ == "__main__":
     main(sys.argv)

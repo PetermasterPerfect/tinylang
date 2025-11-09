@@ -1,4 +1,4 @@
-from ast import *
+from ast_builder import *
 from llvmlite import ir
 
 #TODO: make cfg dot graph prettier
@@ -121,8 +121,10 @@ class FunCfg:
             self.exit_stm = ret_node
         else:
             self.start_stm = None
+            self.exit_stm = StmCfg(fun_ast_node.ret)
 
-        self.reversal_mapping = self.reverse_cfg()
+        if self.start_stm:
+            self.reversal_mapping = self.reverse_cfg()
 
 
     def compile_to_llvm_ir():
@@ -145,6 +147,7 @@ class FunCfg:
                     reversed_nodes = do_reversing(n, reversed_nodes)
             return reversed_nodes
 
+
         ret = do_reversing(self.start_stm)
         if self.start_stm not in ret:
             ret[self.start_stm] = set()
@@ -154,8 +157,17 @@ class FunCfg:
 
     def dump_2_dot(self):
         print('digraph cfg{')
-        self.start_stm.dump_2_dot(f'{self.start_stm} -> ')
+        if self.start_stm:
+            self.start_stm.dump_2_dot(f'{self.start_stm} -> ')
+        else:
+            self.exit_stm.dump_2_dot(f'{self.exit_stm} -> ')
         print('}')
+
+
+    def compile(self, state):
+        for s in self.ast_node.stms:
+            s.compile(state)
+        self.ast_node.ret.compile(state)
 
 
 class StmCfg:

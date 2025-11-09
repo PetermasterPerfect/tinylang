@@ -11,6 +11,7 @@ id_list: ID (',' ID)*;
 exp_list: exp (',' exp)*;
 
 stm: ID '=' exp SEMI
+	| fun_call SEMI
 	| OUTPUT exp SEMI
 	| IF '(' exp ')' '{' stm* '}' else?
 	| WHILE '(' exp ')' '{' stm* '}';

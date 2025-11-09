@@ -1,8 +1,7 @@
 from tinyVisitor import *
 from tinyParser import tinyParser
 from random import randint
-import pdb
-
+from llvmlite import ir
 
 class DotGraphElement:
     def __init__(self, name, label, sub_chain=[]):
@@ -72,7 +71,13 @@ class FunAstNode(AstNode):
         header_node = DotGraphElement('fun_header', header_label, [return_node.id]+sub_chain)
         header_node.print_dot()
         return_node.print_dot()
+
         
+    def compile(self, state):
+        for s in self.stms:
+            s.compile(state)
+        state.builder.ret(self.ret.compile(state))
+
 
 class AssignAstNode(AstNode):
     def __init__(self, n, v):
@@ -87,6 +92,15 @@ class AssignAstNode(AstNode):
     def exps(self):
         return self.exp
 
+
+    def compile(self, state):
+        val = self.exp.compile(state)
+        if self.name in state.args:
+            return state.builder.store(val, state.args[self.name])
+        elif self.name in state.vars:
+            return state.builder.store(val, state.vars[self.name])
+        else:
+            raise Exception("Undefined id")
 
     def dump_2_dot(self):
         sub = self.exp.dump_2_dot()
@@ -147,7 +161,25 @@ class IfAstNode(AstNode):
         if self.els:
             else_node.print_dot()
         return if_node
-        
+
+
+    def compile(self, state):
+        if not self.then:
+            return
+        pred = state.builder.fcmp_ordered('==', self.cond.compile(state), ir.Constant(state.double, 0))
+        if self.els:
+            with state.builder.if_else(pred) as (then, otherwise):
+                with then:
+                    for stm in self.then:
+                        stm.compile(state)
+                with otherwise:
+                    for stm in self.els:
+                        stm.compile(state)
+        else:
+            with state.builder.if_then(pred) as then:
+                for stm in self.then:
+                    stm.compile(state)
+    
 
 class WhileAstNode(AstNode):
     def __init__(self, c, b):
@@ -166,6 +198,23 @@ class WhileAstNode(AstNode):
         loop_node = DotGraphElement('loop', self.label(), [cond_node.id]+sub_chain)
         loop_node.print_dot()
         return loop_node
+
+    
+    def compile(self, state):
+        if not self.body:
+            return
+        cond_block = state.builder.append_basic_block('lab')
+        loop_block = state.builder.append_basic_block('lab')
+        after_loop = state.builder.append_basic_block('lab')
+        state.builder.branch(cond_block)
+        state.builder.position_at_start(cond_block)
+        pred = self.cond.compile(state)
+        state.builder.cbranch(pred, loop_block, after_loop)
+        state.builder.position_at_start(loop_block)
+        for stm in self.body:
+            stm.compile(state)
+        state.builder.branch(cond_block)
+        state.builder.position_at_end(after_loop)
 
 
 class ExpAstNode(AstNode):
@@ -200,6 +249,24 @@ class ExpAstNode(AstNode):
             if type(e) is ExpAstNode:
                 ret |= e.exps()
         return ret
+    
+
+    def compile(self, state):
+        if self.op:
+            arg0 = self.sub_exps[0].compile(state)
+            arg1 = self.sub_exps[1].compile(state)
+            if self.op == '+':
+                return state.builder.fadd(arg0, arg1)
+            elif self.op == '-':
+                return state.builder.fsub(arg0, arg1)
+            elif self.op == '*':
+                return state.builder.fmul(arg0, arg1)
+            elif self.op == '/':
+                return state.builder.fdiv(arg0, arg1)
+            else:
+                return state.builder.fcmp_ordered(self.op, arg0, arg1) # ==, >
+        else:
+            return self.sub_exps[0].compile(state)
 
 
     def __str__(self):
@@ -220,6 +287,10 @@ class NumAstNode(AstNode):
         dot = DotGraphElement('num',str(self.value))
         dot.print_dot()
         return dot
+
+
+    def compile(self, state):
+        return ir.Constant(state.double, self.value)
 
 
     def __str__(self):
@@ -249,6 +320,15 @@ class IdAstNode(AstNode):
         return set()
 
 
+    def compile(self, state):
+        if self.name in state.args:
+            return state.builder.load(state.args[self.name])
+        elif self.name in state.vars:
+            return state.builder.load(state.vars[self.name])
+        else:
+            raise Exception("Undefined id")
+
+
     def __str__(self):
         return self.name
 
@@ -261,7 +341,7 @@ class FunCallAstNode(AstNode):
 
     def label(self):
         args = ', '.join([x.label() for x in self.params])
-        return f'{name}({args})'
+        return f'{self.name}({args})'
 
 
     def dump_2_dot(self):
@@ -270,6 +350,19 @@ class FunCallAstNode(AstNode):
         dot = DotGraphElement('fun', self.label(), sub_chain)
         dot.print_dot()
         return dot
+
+
+    def compile(self, state):
+        func = None 
+        for f in state.module.functions:
+            if self.name == f.name:
+                func = f
+        if not func:
+            raise Exception("Undefined function")
+
+        args = [x.compile(state) for x in self.params]
+        return state.builder.call(func, args)
+        
 
 
 class InputAstNode(AstNode):
@@ -337,7 +430,7 @@ class TinyAstBuilder(tinyVisitor):
 
 
     def visitExp_list(self, ctx:tinyParser.Exp_listContext):
-        return [self.visit(x) for x in ctx.children]
+        return [self.visit(x) for x in ctx.children if x.getText() != ',']
 
     def visitElse(self, ctx:tinyParser.ElseContext):
         else_block = [self.visit(x) for x in ctx.stm()]
@@ -361,6 +454,8 @@ class TinyAstBuilder(tinyVisitor):
             cond = self.visit(ctx.exp())
             loop_block = [self.visit(x) for x in ctx.stm()]
             return WhileAstNode(cond, loop_block)
+        else:
+            return self.visit(ctx.fun_call())
             
 
     def visitFun_call(self, ctx:tinyParser.Fun_callContext):
