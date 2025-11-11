@@ -12,6 +12,7 @@ exp_list: exp (',' exp)*;
 
 stm: ID '=' exp SEMI
 	| fun_call SEMI
+	| INPUT ID SEMI
 	| OUTPUT exp SEMI
 	| IF '(' exp ')' '{' stm* '}' else?
 	| WHILE '(' exp ')' '{' stm* '}';
@@ -27,7 +28,6 @@ exp: INT
 	| exp GR exp
 	| exp EQ exp
 	| '('exp')'
-	| INPUT
 	| fun_call;
 
 fun_call: ID'('exp_list?')';

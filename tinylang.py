@@ -26,9 +26,6 @@ def time_test_monotone_framework(ast):
             s=time()
             sol = monotone.simple_worklist_solve()
             print('simple worklist: ', time()-s)
-            s=time()
-            sol = monotone.propagation_worklist_solve()
-            print('propagation worklist: ', time()-s)
             print('-------')
 
 def test_monotone_framework(ast):
@@ -47,9 +44,6 @@ def test_monotone_framework(ast):
                 print('chaotic: \n', sol[-1])
                 sol.append(monotone.simple_worklist_solve())
                 print('simple worklist: \n', sol[-1])
-                sol.append(monotone.propagation_worklist_solve())
-                print('propagation worklist: \n', sol[-1])
-                print(check(sol))
                 print('-------')
 
 def test_dominators(ast):
@@ -106,10 +100,10 @@ def main(argv):
     llvm.initialize_native_asmprinter()
     engine = create_execution_engine()
     mod = compile_ir(engine, str(module))
-    func_ptr = engine.get_function_address("xoo")
+    func_ptr = engine.get_function_address("main")
     cfunc = CFUNCTYPE(c_double, c_double)(func_ptr)
     res = cfunc(10)
-    print("xoo(...) =", res)
+    print("main(...) =", res)
 
 if __name__ == "__main__":
     main(sys.argv)

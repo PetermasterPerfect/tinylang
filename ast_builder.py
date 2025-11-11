@@ -2,6 +2,7 @@ from tinyVisitor import *
 from tinyParser import tinyParser
 from random import randint
 from llvmlite import ir
+from compiler import *
 
 class DotGraphElement:
     def __init__(self, name, label, sub_chain=[]):
@@ -130,6 +131,12 @@ class OutputAstNode(AstNode):
     
     def get_used_vars(self):
         return self.exp.get_used_vars()
+
+
+    def compile(self, state):
+        val = self.exp.compile(state)
+        fmt = state.builder.bitcast(FunCompileState.global_printf_fmt, FunCompileState.voidptr_ty)
+        state.builder.call(FunCompileState.printf, [fmt, val])
 
 
 class IfAstNode(AstNode):
@@ -366,6 +373,10 @@ class FunCallAstNode(AstNode):
 
 
 class InputAstNode(AstNode):
+    def __init__(self, name):
+        self.name = name
+
+
     def dump_2_dot(self):
         dot = DotGraphElement('input', f'input')
         dot.print_dot()
@@ -386,6 +397,21 @@ class InputAstNode(AstNode):
 
     def __str__(self):
         return 'input'
+
+
+    def addr(self, state):
+        if self.name in state.args:
+            return state.args[self.name]
+        elif self.name in state.vars:
+            return state.vars[self.name]
+        else:
+            raise Exception("Undefined id")
+
+
+    def compile(self, state):
+        addr = self.addr(state)
+        fmt = state.builder.bitcast(FunCompileState.global_scanf_fmt, FunCompileState.voidptr_ty)
+        state.builder.call(FunCompileState.scanf, [fmt, addr])
 
 
 def token_to_operator(ctx):
@@ -438,15 +464,14 @@ class TinyAstBuilder(tinyVisitor):
 
 
     def visitStm(self, ctx:tinyParser.StmContext):
-        if ctx.ID():
-            return AssignAstNode(ctx.ID().getText(), self.visit(ctx.exp()))
-        elif ctx.OUTPUT():
+        if ctx.OUTPUT():
             return OutputAstNode(self.visit(ctx.exp()))
+        elif ctx.INPUT():
+            return InputAstNode(ctx.ID().getText())
         elif ctx.IF():
             cond = self.visit(ctx.exp())
             then_block = [self.visit(x) for x in ctx.stm()]
-            if ctx.else_():
-                else_block = self.visit(ctx.else_())
+            if else_block:=ctx.else_():
                 return IfAstNode(cond, then_block, else_block)
             else:
                 return IfAstNode(cond, then_block, [])
@@ -454,6 +479,8 @@ class TinyAstBuilder(tinyVisitor):
             cond = self.visit(ctx.exp())
             loop_block = [self.visit(x) for x in ctx.stm()]
             return WhileAstNode(cond, loop_block)
+        elif ctx.ID():
+            return AssignAstNode(ctx.ID().getText(), self.visit(ctx.exp()))
         else:
             return self.visit(ctx.fun_call())
             
@@ -469,8 +496,6 @@ class TinyAstBuilder(tinyVisitor):
             return NumAstNode(int(ctx.INT().getText()))
         elif ctx.ID():
             return IdAstNode(ctx.ID().getText())
-        elif ctx.INPUT():
-            return InputAstNode()
         elif fun_call_ctx := ctx.fun_call():
             return self.visit(fun_call_ctx)
         else:
