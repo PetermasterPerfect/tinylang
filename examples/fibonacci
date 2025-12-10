@@ -4,7 +4,8 @@ fib(n) {
     b = 1;
     i = 0;
 
-    while (i > n) {
+    while (n > i) {
+		output i;
         t = a + b;
         a = b;
         b = t;
@@ -15,8 +16,8 @@ fib(n) {
 }
 
 main() {
-	var x;
-	input x;
-    output fib(x);
-    return 0;
+	var n, x;
+	input n;
+    x = fib(n);
+    return x;
 }

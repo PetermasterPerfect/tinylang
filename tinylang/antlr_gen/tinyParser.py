@@ -10,60 +10,61 @@ else:
 
 def serializedATN():
     return [
-        4,1,23,160,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
+        4,1,23,162,2,0,7,0,2,1,7,1,2,2,7,2,2,3,7,3,2,4,7,4,2,5,7,5,2,6,7,
         6,2,7,7,7,2,8,7,8,1,0,5,0,20,8,0,10,0,12,0,23,9,0,1,1,1,1,1,1,3,
         1,28,8,1,1,1,1,1,1,2,1,2,1,2,1,2,1,2,1,2,3,2,38,8,2,1,2,5,2,41,8,
         2,10,2,12,2,44,9,2,1,2,1,2,1,2,1,2,1,2,1,3,1,3,1,3,5,3,54,8,3,10,
         3,12,3,57,9,3,1,4,1,4,1,4,5,4,62,8,4,10,4,12,4,65,9,4,1,5,1,5,1,
-        5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,5,
-        5,85,8,5,10,5,12,5,88,9,5,1,5,1,5,3,5,92,8,5,1,5,1,5,1,5,1,5,1,5,
-        1,5,5,5,100,8,5,10,5,12,5,103,9,5,1,5,1,5,3,5,107,8,5,1,6,1,6,1,
-        6,5,6,112,8,6,10,6,12,6,115,9,6,1,6,1,6,1,7,1,7,1,7,1,7,1,7,1,7,
-        1,7,1,7,1,7,3,7,128,8,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,
-        1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,5,7,148,8,7,10,7,12,7,151,9,7,1,
-        8,1,8,1,8,3,8,156,8,8,1,8,1,8,1,8,0,1,14,9,0,2,4,6,8,10,12,14,16,
-        0,0,175,0,21,1,0,0,0,2,24,1,0,0,0,4,31,1,0,0,0,6,50,1,0,0,0,8,58,
-        1,0,0,0,10,106,1,0,0,0,12,108,1,0,0,0,14,127,1,0,0,0,16,152,1,0,
-        0,0,18,20,3,4,2,0,19,18,1,0,0,0,20,23,1,0,0,0,21,19,1,0,0,0,21,22,
-        1,0,0,0,22,1,1,0,0,0,23,21,1,0,0,0,24,25,5,21,0,0,25,27,5,1,0,0,
-        26,28,3,6,3,0,27,26,1,0,0,0,27,28,1,0,0,0,28,29,1,0,0,0,29,30,5,
-        2,0,0,30,3,1,0,0,0,31,32,3,2,1,0,32,37,5,3,0,0,33,34,5,14,0,0,34,
-        35,3,6,3,0,35,36,5,20,0,0,36,38,1,0,0,0,37,33,1,0,0,0,37,38,1,0,
-        0,0,38,42,1,0,0,0,39,41,3,10,5,0,40,39,1,0,0,0,41,44,1,0,0,0,42,
-        40,1,0,0,0,42,43,1,0,0,0,43,45,1,0,0,0,44,42,1,0,0,0,45,46,5,13,
-        0,0,46,47,3,14,7,0,47,48,5,20,0,0,48,49,5,4,0,0,49,5,1,0,0,0,50,
-        55,5,21,0,0,51,52,5,5,0,0,52,54,5,21,0,0,53,51,1,0,0,0,54,57,1,0,
-        0,0,55,53,1,0,0,0,55,56,1,0,0,0,56,7,1,0,0,0,57,55,1,0,0,0,58,63,
-        3,14,7,0,59,60,5,5,0,0,60,62,3,14,7,0,61,59,1,0,0,0,62,65,1,0,0,
-        0,63,61,1,0,0,0,63,64,1,0,0,0,64,9,1,0,0,0,65,63,1,0,0,0,66,67,5,
-        21,0,0,67,68,5,6,0,0,68,69,3,14,7,0,69,70,5,20,0,0,70,107,1,0,0,
-        0,71,72,3,16,8,0,72,73,5,20,0,0,73,107,1,0,0,0,74,75,5,15,0,0,75,
-        76,3,14,7,0,76,77,5,20,0,0,77,107,1,0,0,0,78,79,5,17,0,0,79,80,5,
-        1,0,0,80,81,3,14,7,0,81,82,5,2,0,0,82,86,5,3,0,0,83,85,3,10,5,0,
-        84,83,1,0,0,0,85,88,1,0,0,0,86,84,1,0,0,0,86,87,1,0,0,0,87,89,1,
-        0,0,0,88,86,1,0,0,0,89,91,5,4,0,0,90,92,3,12,6,0,91,90,1,0,0,0,91,
-        92,1,0,0,0,92,107,1,0,0,0,93,94,5,19,0,0,94,95,5,1,0,0,95,96,3,14,
-        7,0,96,97,5,2,0,0,97,101,5,3,0,0,98,100,3,10,5,0,99,98,1,0,0,0,100,
-        103,1,0,0,0,101,99,1,0,0,0,101,102,1,0,0,0,102,104,1,0,0,0,103,101,
-        1,0,0,0,104,105,5,4,0,0,105,107,1,0,0,0,106,66,1,0,0,0,106,71,1,
-        0,0,0,106,74,1,0,0,0,106,78,1,0,0,0,106,93,1,0,0,0,107,11,1,0,0,
-        0,108,109,5,18,0,0,109,113,5,3,0,0,110,112,3,10,5,0,111,110,1,0,
-        0,0,112,115,1,0,0,0,113,111,1,0,0,0,113,114,1,0,0,0,114,116,1,0,
-        0,0,115,113,1,0,0,0,116,117,5,4,0,0,117,13,1,0,0,0,118,119,6,7,-1,
-        0,119,128,5,22,0,0,120,128,5,21,0,0,121,122,5,1,0,0,122,123,3,14,
-        7,0,123,124,5,2,0,0,124,128,1,0,0,0,125,128,5,16,0,0,126,128,3,16,
-        8,0,127,118,1,0,0,0,127,120,1,0,0,0,127,121,1,0,0,0,127,125,1,0,
-        0,0,127,126,1,0,0,0,128,149,1,0,0,0,129,130,10,9,0,0,130,131,5,9,
-        0,0,131,148,3,14,7,10,132,133,10,8,0,0,133,134,5,10,0,0,134,148,
-        3,14,7,9,135,136,10,7,0,0,136,137,5,7,0,0,137,148,3,14,7,8,138,139,
-        10,6,0,0,139,140,5,8,0,0,140,148,3,14,7,7,141,142,10,5,0,0,142,143,
-        5,12,0,0,143,148,3,14,7,6,144,145,10,4,0,0,145,146,5,11,0,0,146,
-        148,3,14,7,5,147,129,1,0,0,0,147,132,1,0,0,0,147,135,1,0,0,0,147,
-        138,1,0,0,0,147,141,1,0,0,0,147,144,1,0,0,0,148,151,1,0,0,0,149,
-        147,1,0,0,0,149,150,1,0,0,0,150,15,1,0,0,0,151,149,1,0,0,0,152,153,
-        5,21,0,0,153,155,5,1,0,0,154,156,3,8,4,0,155,154,1,0,0,0,155,156,
-        1,0,0,0,156,157,1,0,0,0,157,158,5,2,0,0,158,17,1,0,0,0,15,21,27,
-        37,42,55,63,86,91,101,106,113,127,147,149,155
+        5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,5,1,
+        5,1,5,1,5,5,5,88,8,5,10,5,12,5,91,9,5,1,5,1,5,3,5,95,8,5,1,5,1,5,
+        1,5,1,5,1,5,1,5,5,5,103,8,5,10,5,12,5,106,9,5,1,5,1,5,3,5,110,8,
+        5,1,6,1,6,1,6,5,6,115,8,6,10,6,12,6,118,9,6,1,6,1,6,1,7,1,7,1,7,
+        1,7,1,7,1,7,1,7,1,7,3,7,130,8,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,
+        1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,1,7,5,7,150,8,7,10,7,12,7,153,
+        9,7,1,8,1,8,1,8,3,8,158,8,8,1,8,1,8,1,8,0,1,14,9,0,2,4,6,8,10,12,
+        14,16,0,0,177,0,21,1,0,0,0,2,24,1,0,0,0,4,31,1,0,0,0,6,50,1,0,0,
+        0,8,58,1,0,0,0,10,109,1,0,0,0,12,111,1,0,0,0,14,129,1,0,0,0,16,154,
+        1,0,0,0,18,20,3,4,2,0,19,18,1,0,0,0,20,23,1,0,0,0,21,19,1,0,0,0,
+        21,22,1,0,0,0,22,1,1,0,0,0,23,21,1,0,0,0,24,25,5,21,0,0,25,27,5,
+        1,0,0,26,28,3,6,3,0,27,26,1,0,0,0,27,28,1,0,0,0,28,29,1,0,0,0,29,
+        30,5,2,0,0,30,3,1,0,0,0,31,32,3,2,1,0,32,37,5,3,0,0,33,34,5,14,0,
+        0,34,35,3,6,3,0,35,36,5,20,0,0,36,38,1,0,0,0,37,33,1,0,0,0,37,38,
+        1,0,0,0,38,42,1,0,0,0,39,41,3,10,5,0,40,39,1,0,0,0,41,44,1,0,0,0,
+        42,40,1,0,0,0,42,43,1,0,0,0,43,45,1,0,0,0,44,42,1,0,0,0,45,46,5,
+        13,0,0,46,47,3,14,7,0,47,48,5,20,0,0,48,49,5,4,0,0,49,5,1,0,0,0,
+        50,55,5,21,0,0,51,52,5,5,0,0,52,54,5,21,0,0,53,51,1,0,0,0,54,57,
+        1,0,0,0,55,53,1,0,0,0,55,56,1,0,0,0,56,7,1,0,0,0,57,55,1,0,0,0,58,
+        63,3,14,7,0,59,60,5,5,0,0,60,62,3,14,7,0,61,59,1,0,0,0,62,65,1,0,
+        0,0,63,61,1,0,0,0,63,64,1,0,0,0,64,9,1,0,0,0,65,63,1,0,0,0,66,67,
+        5,21,0,0,67,68,5,6,0,0,68,69,3,14,7,0,69,70,5,20,0,0,70,110,1,0,
+        0,0,71,72,3,16,8,0,72,73,5,20,0,0,73,110,1,0,0,0,74,75,5,16,0,0,
+        75,76,5,21,0,0,76,110,5,20,0,0,77,78,5,15,0,0,78,79,3,14,7,0,79,
+        80,5,20,0,0,80,110,1,0,0,0,81,82,5,17,0,0,82,83,5,1,0,0,83,84,3,
+        14,7,0,84,85,5,2,0,0,85,89,5,3,0,0,86,88,3,10,5,0,87,86,1,0,0,0,
+        88,91,1,0,0,0,89,87,1,0,0,0,89,90,1,0,0,0,90,92,1,0,0,0,91,89,1,
+        0,0,0,92,94,5,4,0,0,93,95,3,12,6,0,94,93,1,0,0,0,94,95,1,0,0,0,95,
+        110,1,0,0,0,96,97,5,19,0,0,97,98,5,1,0,0,98,99,3,14,7,0,99,100,5,
+        2,0,0,100,104,5,3,0,0,101,103,3,10,5,0,102,101,1,0,0,0,103,106,1,
+        0,0,0,104,102,1,0,0,0,104,105,1,0,0,0,105,107,1,0,0,0,106,104,1,
+        0,0,0,107,108,5,4,0,0,108,110,1,0,0,0,109,66,1,0,0,0,109,71,1,0,
+        0,0,109,74,1,0,0,0,109,77,1,0,0,0,109,81,1,0,0,0,109,96,1,0,0,0,
+        110,11,1,0,0,0,111,112,5,18,0,0,112,116,5,3,0,0,113,115,3,10,5,0,
+        114,113,1,0,0,0,115,118,1,0,0,0,116,114,1,0,0,0,116,117,1,0,0,0,
+        117,119,1,0,0,0,118,116,1,0,0,0,119,120,5,4,0,0,120,13,1,0,0,0,121,
+        122,6,7,-1,0,122,130,5,22,0,0,123,130,5,21,0,0,124,125,5,1,0,0,125,
+        126,3,14,7,0,126,127,5,2,0,0,127,130,1,0,0,0,128,130,3,16,8,0,129,
+        121,1,0,0,0,129,123,1,0,0,0,129,124,1,0,0,0,129,128,1,0,0,0,130,
+        151,1,0,0,0,131,132,10,8,0,0,132,133,5,9,0,0,133,150,3,14,7,9,134,
+        135,10,7,0,0,135,136,5,10,0,0,136,150,3,14,7,8,137,138,10,6,0,0,
+        138,139,5,7,0,0,139,150,3,14,7,7,140,141,10,5,0,0,141,142,5,8,0,
+        0,142,150,3,14,7,6,143,144,10,4,0,0,144,145,5,12,0,0,145,150,3,14,
+        7,5,146,147,10,3,0,0,147,148,5,11,0,0,148,150,3,14,7,4,149,131,1,
+        0,0,0,149,134,1,0,0,0,149,137,1,0,0,0,149,140,1,0,0,0,149,143,1,
+        0,0,0,149,146,1,0,0,0,150,153,1,0,0,0,151,149,1,0,0,0,151,152,1,
+        0,0,0,152,15,1,0,0,0,153,151,1,0,0,0,154,155,5,21,0,0,155,157,5,
+        1,0,0,156,158,3,8,4,0,157,156,1,0,0,0,157,158,1,0,0,0,158,159,1,
+        0,0,0,159,160,5,2,0,0,160,17,1,0,0,0,15,21,27,37,42,55,63,89,94,
+        104,109,116,129,149,151,157
     ]
 
 class tinyParser ( Parser ):
@@ -318,7 +319,7 @@ class tinyParser ( Parser ):
             self.state = 42
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2785280) != 0):
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2850816) != 0):
                 self.state = 39
                 self.stm()
                 self.state = 44
@@ -474,6 +475,9 @@ class tinyParser ( Parser ):
             return self.getTypedRuleContext(tinyParser.Fun_callContext,0)
 
 
+        def INPUT(self):
+            return self.getToken(tinyParser.INPUT, 0)
+
         def OUTPUT(self):
             return self.getToken(tinyParser.OUTPUT, 0)
 
@@ -512,7 +516,7 @@ class tinyParser ( Parser ):
         self.enterRule(localctx, 10, self.RULE_stm)
         self._la = 0 # Token type
         try:
-            self.state = 106
+            self.state = 109
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,9,self._ctx)
             if la_ == 1:
@@ -538,70 +542,80 @@ class tinyParser ( Parser ):
             elif la_ == 3:
                 self.enterOuterAlt(localctx, 3)
                 self.state = 74
-                self.match(tinyParser.OUTPUT)
+                self.match(tinyParser.INPUT)
                 self.state = 75
-                self.exp(0)
+                self.match(tinyParser.ID)
                 self.state = 76
                 self.match(tinyParser.SEMI)
                 pass
 
             elif la_ == 4:
                 self.enterOuterAlt(localctx, 4)
+                self.state = 77
+                self.match(tinyParser.OUTPUT)
                 self.state = 78
-                self.match(tinyParser.IF)
-                self.state = 79
-                self.match(tinyParser.T__0)
-                self.state = 80
                 self.exp(0)
+                self.state = 79
+                self.match(tinyParser.SEMI)
+                pass
+
+            elif la_ == 5:
+                self.enterOuterAlt(localctx, 5)
                 self.state = 81
-                self.match(tinyParser.T__1)
+                self.match(tinyParser.IF)
                 self.state = 82
+                self.match(tinyParser.T__0)
+                self.state = 83
+                self.exp(0)
+                self.state = 84
+                self.match(tinyParser.T__1)
+                self.state = 85
                 self.match(tinyParser.T__2)
-                self.state = 86
+                self.state = 89
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2785280) != 0):
-                    self.state = 83
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2850816) != 0):
+                    self.state = 86
                     self.stm()
-                    self.state = 88
+                    self.state = 91
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 89
+                self.state = 92
                 self.match(tinyParser.T__3)
-                self.state = 91
+                self.state = 94
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
                 if _la==18:
-                    self.state = 90
+                    self.state = 93
                     self.else_()
 
 
                 pass
 
-            elif la_ == 5:
-                self.enterOuterAlt(localctx, 5)
-                self.state = 93
-                self.match(tinyParser.WHILE)
-                self.state = 94
-                self.match(tinyParser.T__0)
-                self.state = 95
-                self.exp(0)
+            elif la_ == 6:
+                self.enterOuterAlt(localctx, 6)
                 self.state = 96
-                self.match(tinyParser.T__1)
+                self.match(tinyParser.WHILE)
                 self.state = 97
+                self.match(tinyParser.T__0)
+                self.state = 98
+                self.exp(0)
+                self.state = 99
+                self.match(tinyParser.T__1)
+                self.state = 100
                 self.match(tinyParser.T__2)
-                self.state = 101
+                self.state = 104
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
-                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2785280) != 0):
-                    self.state = 98
+                while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2850816) != 0):
+                    self.state = 101
                     self.stm()
-                    self.state = 103
+                    self.state = 106
                     self._errHandler.sync(self)
                     _la = self._input.LA(1)
 
-                self.state = 104
+                self.state = 107
                 self.match(tinyParser.T__3)
                 pass
 
@@ -651,21 +665,21 @@ class tinyParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 108
+            self.state = 111
             self.match(tinyParser.ELSE)
-            self.state = 109
+            self.state = 112
             self.match(tinyParser.T__2)
-            self.state = 113
+            self.state = 116
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2785280) != 0):
-                self.state = 110
+            while (((_la) & ~0x3f) == 0 and ((1 << _la) & 2850816) != 0):
+                self.state = 113
                 self.stm()
-                self.state = 115
+                self.state = 118
                 self._errHandler.sync(self)
                 _la = self._input.LA(1)
 
-            self.state = 116
+            self.state = 119
             self.match(tinyParser.T__3)
         except RecognitionException as re:
             localctx.exception = re
@@ -695,9 +709,6 @@ class tinyParser ( Parser ):
             else:
                 return self.getTypedRuleContext(tinyParser.ExpContext,i)
 
-
-        def INPUT(self):
-            return self.getToken(tinyParser.INPUT, 0)
 
         def fun_call(self):
             return self.getTypedRuleContext(tinyParser.Fun_callContext,0)
@@ -741,41 +752,36 @@ class tinyParser ( Parser ):
         self.enterRecursionRule(localctx, 14, self.RULE_exp, _p)
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 127
+            self.state = 129
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,11,self._ctx)
             if la_ == 1:
-                self.state = 119
+                self.state = 122
                 self.match(tinyParser.INT)
                 pass
 
             elif la_ == 2:
-                self.state = 120
+                self.state = 123
                 self.match(tinyParser.ID)
                 pass
 
             elif la_ == 3:
-                self.state = 121
+                self.state = 124
                 self.match(tinyParser.T__0)
-                self.state = 122
+                self.state = 125
                 self.exp(0)
-                self.state = 123
+                self.state = 126
                 self.match(tinyParser.T__1)
                 pass
 
             elif la_ == 4:
-                self.state = 125
-                self.match(tinyParser.INPUT)
-                pass
-
-            elif la_ == 5:
-                self.state = 126
+                self.state = 128
                 self.fun_call()
                 pass
 
 
             self._ctx.stop = self._input.LT(-1)
-            self.state = 149
+            self.state = 151
             self._errHandler.sync(self)
             _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
             while _alt!=2 and _alt!=ATN.INVALID_ALT_NUMBER:
@@ -783,89 +789,89 @@ class tinyParser ( Parser ):
                     if self._parseListeners is not None:
                         self.triggerExitRuleEvent()
                     _prevctx = localctx
-                    self.state = 147
+                    self.state = 149
                     self._errHandler.sync(self)
                     la_ = self._interp.adaptivePredict(self._input,12,self._ctx)
                     if la_ == 1:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 129
-                        if not self.precpred(self._ctx, 9):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 9)")
-                        self.state = 130
-                        self.match(tinyParser.MUL)
                         self.state = 131
-                        self.exp(10)
+                        if not self.precpred(self._ctx, 8):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
+                        self.state = 132
+                        self.match(tinyParser.MUL)
+                        self.state = 133
+                        self.exp(9)
                         pass
 
                     elif la_ == 2:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 132
-                        if not self.precpred(self._ctx, 8):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 8)")
-                        self.state = 133
-                        self.match(tinyParser.DIV)
                         self.state = 134
-                        self.exp(9)
+                        if not self.precpred(self._ctx, 7):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
+                        self.state = 135
+                        self.match(tinyParser.DIV)
+                        self.state = 136
+                        self.exp(8)
                         pass
 
                     elif la_ == 3:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 135
-                        if not self.precpred(self._ctx, 7):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 7)")
-                        self.state = 136
-                        self.match(tinyParser.ADD)
                         self.state = 137
-                        self.exp(8)
+                        if not self.precpred(self._ctx, 6):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
+                        self.state = 138
+                        self.match(tinyParser.ADD)
+                        self.state = 139
+                        self.exp(7)
                         pass
 
                     elif la_ == 4:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 138
-                        if not self.precpred(self._ctx, 6):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 6)")
-                        self.state = 139
-                        self.match(tinyParser.SUB)
                         self.state = 140
-                        self.exp(7)
+                        if not self.precpred(self._ctx, 5):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
+                        self.state = 141
+                        self.match(tinyParser.SUB)
+                        self.state = 142
+                        self.exp(6)
                         pass
 
                     elif la_ == 5:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 141
-                        if not self.precpred(self._ctx, 5):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 5)")
-                        self.state = 142
-                        self.match(tinyParser.GR)
                         self.state = 143
-                        self.exp(6)
+                        if not self.precpred(self._ctx, 4):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
+                        self.state = 144
+                        self.match(tinyParser.GR)
+                        self.state = 145
+                        self.exp(5)
                         pass
 
                     elif la_ == 6:
                         localctx = tinyParser.ExpContext(self, _parentctx, _parentState)
                         self.pushNewRecursionContext(localctx, _startState, self.RULE_exp)
-                        self.state = 144
-                        if not self.precpred(self._ctx, 4):
-                            from antlr4.error.Errors import FailedPredicateException
-                            raise FailedPredicateException(self, "self.precpred(self._ctx, 4)")
-                        self.state = 145
-                        self.match(tinyParser.EQ)
                         self.state = 146
-                        self.exp(5)
+                        if not self.precpred(self._ctx, 3):
+                            from antlr4.error.Errors import FailedPredicateException
+                            raise FailedPredicateException(self, "self.precpred(self._ctx, 3)")
+                        self.state = 147
+                        self.match(tinyParser.EQ)
+                        self.state = 148
+                        self.exp(4)
                         pass
 
              
-                self.state = 151
+                self.state = 153
                 self._errHandler.sync(self)
                 _alt = self._interp.adaptivePredict(self._input,13,self._ctx)
 
@@ -911,19 +917,19 @@ class tinyParser ( Parser ):
         self._la = 0 # Token type
         try:
             self.enterOuterAlt(localctx, 1)
-            self.state = 152
+            self.state = 154
             self.match(tinyParser.ID)
-            self.state = 153
-            self.match(tinyParser.T__0)
             self.state = 155
+            self.match(tinyParser.T__0)
+            self.state = 157
             self._errHandler.sync(self)
             _la = self._input.LA(1)
-            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 6356994) != 0):
-                self.state = 154
+            if (((_la) & ~0x3f) == 0 and ((1 << _la) & 6291458) != 0):
+                self.state = 156
                 self.exp_list()
 
 
-            self.state = 157
+            self.state = 159
             self.match(tinyParser.T__1)
         except RecognitionException as re:
             localctx.exception = re
@@ -947,27 +953,27 @@ class tinyParser ( Parser ):
 
     def exp_sempred(self, localctx:ExpContext, predIndex:int):
             if predIndex == 0:
-                return self.precpred(self._ctx, 9)
-         
-
-            if predIndex == 1:
                 return self.precpred(self._ctx, 8)
          
 
-            if predIndex == 2:
+            if predIndex == 1:
                 return self.precpred(self._ctx, 7)
          
 
-            if predIndex == 3:
+            if predIndex == 2:
                 return self.precpred(self._ctx, 6)
          
 
-            if predIndex == 4:
+            if predIndex == 3:
                 return self.precpred(self._ctx, 5)
          
 
-            if predIndex == 5:
+            if predIndex == 4:
                 return self.precpred(self._ctx, 4)
+         
+
+            if predIndex == 5:
+                return self.precpred(self._ctx, 3)
          
 
 
