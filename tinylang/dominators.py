@@ -1,4 +1,4 @@
-from cfg import *
+from tinylang.cfg import *
 from math import inf
 """
 based on 

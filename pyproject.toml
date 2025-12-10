@@ -1,0 +1,12 @@
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tinylang"
+version = "0.1.0"
+description = "A tiny language compiler using ANTLR4 and LLVM IR"
+authors = [{ name = "Piotr Kajda" }]
+dependencies = [
+    "antlr4-python3-runtime>=4.13",
+    "llvmlite>=0.41"
+]

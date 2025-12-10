@@ -1,4 +1,4 @@
-from ast_builder import *
+from tinylang.ast_builder import *
 from llvmlite import ir
 
 #TODO: make cfg dot graph prettier

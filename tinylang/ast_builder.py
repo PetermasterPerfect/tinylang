@@ -1,8 +1,8 @@
-from tinyVisitor import *
-from tinyParser import tinyParser
+from tinylang.antlr_gen.tinyVisitor import *
+from tinylang.antlr_gen.tinyParser import tinyParser
 from random import randint
 from llvmlite import ir
-from compiler import *
+from tinylang.compiler import *
 
 class DotGraphElement:
     def __init__(self, name, label, sub_chain=[]):

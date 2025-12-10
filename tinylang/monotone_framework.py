@@ -1,6 +1,6 @@
 from random import randint, choice
-from cfg import *
-from ast import *
+from tinylang.cfg import *
+from tinylang.ast_builder import *
 
 
 class LiveVariablesAnalysis:

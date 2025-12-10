@@ -1,13 +1,12 @@
 from antlr4 import *
 from time import *
-from tinyLexer import tinyLexer
-from tinyParser import tinyParser
-from ast_builder import TinyAstBuilder
-from cfg import FunCfg
-from monotone_framework import *
-from dominators import *
-import sys
-from compiler import *
+from tinylang.antlr_gen.tinyLexer import tinyLexer
+from tinylang.antlr_gen.tinyParser import tinyParser
+from tinylang.ast_builder import TinyAstBuilder
+from tinylang.cfg import FunCfg
+from tinylang.monotone_framework import *
+from tinylang.dominators import *
+from tinylang.compiler import *
 from ctypes import CFUNCTYPE, c_double
 import llvmlite.binding as llvm
 #java -jar antlr-4.13.2-complete.jar -Dlanguage=Python3 -no-listener -visitor tiny.g4 
@@ -77,7 +76,7 @@ def compile_ir(engine, llvm_ir):
 def main(argv):
     if len(argv)<2:
         print('usage: tinylang.py <script_name>\n')
-        sys.exit(3)
+        return
     input_stream = FileStream(argv[1])
     lexer = tinyLexer(input_stream)
     stream = CommonTokenStream(lexer)
@@ -89,7 +88,8 @@ def main(argv):
     states = []
     names = {x.name for x in ast.functions}
     if len(names) < len(ast.functions):
-        raise Exception("Functions with same name")
+        print("Error: function name duplicated")
+        return
     for f in ast.functions:
         states.append(FunCompileState(f, module))
 
@@ -104,6 +104,3 @@ def main(argv):
     cfunc = CFUNCTYPE(c_double, c_double)(func_ptr)
     res = cfunc(10)
     print("main(...) =", res)
-
-if __name__ == "__main__":
-    main(sys.argv)
