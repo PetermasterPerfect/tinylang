@@ -59,6 +59,11 @@ class FunAstNode(AstNode):
         self.ret = r
 
 
+    def label(self):
+        args = ', '.join([x.label() for x in self.args])
+        return f'{self.name}({args})'
+
+
     def dump_2_dot(self):
         sub_stms = [x.dump_2_dot() for x in self.stms]
         label = [x.label for x in sub_stms]

@@ -176,6 +176,10 @@ class StmCfg:
         self.successors = []
 
 
+    def __str__(self):
+        return self.ast_node.label()
+
+
     def dump_2_dot(self, st=None, tab=None):
         if st is None:
             st = ''

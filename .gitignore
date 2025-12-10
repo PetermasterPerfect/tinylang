@@ -174,3 +174,4 @@ cython_debug/
 .jar
 .sh
 .vim
+.swp
