@@ -476,7 +476,8 @@ class TinyAstBuilder(tinyVisitor):
         elif ctx.IF():
             cond = self.visit(ctx.exp())
             then_block = [self.visit(x) for x in ctx.stm()]
-            if else_block:=ctx.else_():
+            if ctx.else_():
+                else_block = self.visit(ctx.else_())
                 return IfAstNode(cond, then_block, else_block)
             else:
                 return IfAstNode(cond, then_block, [])

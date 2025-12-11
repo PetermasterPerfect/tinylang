@@ -38,7 +38,7 @@ def run_monotone_framework(ast):
                 print('Analysis type: ', analysis)
                 monotone = MDFAF(fun_cfg, analysis(fun_cfg))
                 sol = monotone.simple_worklist_solve()
-                print('simple worklist: \n', [f'{x} - {sol[x]}' for x in sol])
+                print('solution: \n', [f'{x} - {sol[x]}' for x in sol])
                 print('-------')
 
 def test_dominators(ast):
